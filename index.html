@@ -1,247 +1,439 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Love‑Is Style Collage — Pure HTML/CSS/JS</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&family=Lobster&family=Comfortaa:wght@400;700&family=Pacifico&family=Russo+One&family=Montserrat:wght@500;700&display=swap');
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Love‑Is Style Collage — Pure HTML/CSS/JS</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&family=Lobster&family=Comfortaa:wght@400;700&family=Pacifico&family=Russo+One&family=Montserrat:wght@500;700&display=swap');
 
-    :root{ --ui:#111827; --bd:#cbd5e1; --bg:#f3f4f6; }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body { margin: 0; background: var(--bg); font-family: 'Montserrat', system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+		:root {
+			--ui: #111827;
+			--bd: #cbd5e1;
+			--bg: #f3f4f6;
+		}
 
-    .app{ display:flex; align-items:flex-start; gap:16px; padding:16px; width: min(1100px, 100%); }
+		* {
+			box-sizing: border-box
+		}
 
-    canvas { border: 2px solid #111; background: #fff; width: 100%; max-width: 480px; height: auto; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.08); touch-action: manipulation; }
+		html,
+		body {
+			height: 100%
+		}
 
-    .controls { flex:1; margin-left: 20px; display: grid; gap: 12px; align-content: start; max-width: 520px; padding: 10px 0; }
-    .controls label { display:block; font-size:14px; color:#111; margin-bottom:4px; }
-    .controls input[type="text"], .controls select, .controls input[type="range"] { width: 100%; padding: 12px 14px; border: 1px solid var(--bd); border-radius: 10px; background:#fff; font-size:16px; }
-    .row { display:grid; gap:8px; }
-    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .btns { display:flex; gap:10px; flex-wrap:wrap; margin:4px 0 12px; }
-    button { height:44px; padding: 0 14px; border: 1px solid var(--ui); background: var(--ui); color:#fff; cursor: pointer; border-radius: 10px; font-weight:600; font-size:16px; }
-    button.secondary{ background:#fff; color:var(--ui); }
-    button:active{ transform: translateY(1px); }
-    button:hover { filter: brightness(1.05); }
-    small.hint{color:#475569}
+		body {
+			margin: 0;
+			background: var(--bg);
+			font-family: 'Montserrat', system-ui;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+		}
 
-    /* БОльшие ползунки для тач-устройств */
-    input[type="range"]{ -webkit-appearance:none; appearance:none; height: 6px; border-radius: 999px; background:#e5e7eb; }
-    input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:28px; height:28px; border-radius:50%; background:#111827; border:2px solid #0ea5e9; }
-    input[type="range"]::-moz-range-thumb{ width:28px; height:28px; border:none; border-radius:50%; background:#111827; }
+		.app {
+			display: flex;
+			align-items: flex-start;
+			gap: 16px;
+			padding: 16px;
+			width: min(1100px, 100%);
+		}
 
-    /* Мобильная компоновка */
-    @media (max-width: 700px){
-      body{ align-items: stretch; }
-      .app{ flex-direction: column; padding:12px; gap:12px; }
-      .controls{ margin-left:0; max-width:100%; }
-      canvas{ max-width: 100%; }
-      .grid2{ grid-template-columns: 1fr; }
-    }
-  </style>
+		canvas {
+			border: 2px solid #111;
+			background: #fff;
+			width: 100%;
+			max-width: 520px;
+			height: auto;
+			border-radius: 10px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+			touch-action: manipulation;
+		}
+
+		.controls {
+			flex: 1;
+			display: grid;
+			gap: 12px;
+			align-content: start;
+			max-width: 520px;
+		}
+
+		.controls label {
+			display: block;
+			font-size: 14px;
+			color: #111;
+			margin-bottom: 4px;
+		}
+
+		.controls input[type="text"],
+		.controls select,
+		.controls input[type="range"] {
+			width: 100%;
+			padding: 12px 14px;
+			border: 1px solid var(--bd);
+			border-radius: 10px;
+			background: #fff;
+			font-size: 16px;
+		}
+
+		.row {
+			display: grid;
+			gap: 8px;
+		}
+
+		.grid2 {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		.btns {
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+			margin: 4px 0 12px;
+		}
+
+		button {
+			height: 44px;
+			padding: 0 14px;
+			border: 1px solid var(--ui);
+			background: var(--ui);
+			color: #fff;
+			cursor: pointer;
+			border-radius: 10px;
+			font-weight: 600;
+			font-size: 16px;
+		}
+
+		button.secondary {
+			background: #fff;
+			color: var(--ui);
+		}
+
+		button:active {
+			transform: translateY(1px);
+		}
+
+		button:hover {
+			filter: brightness(1.05);
+		}
+
+		small.hint {
+			color: #475569
+		}
+
+		input[type="range"] {
+			-webkit-appearance: none;
+			appearance: none;
+			height: 6px;
+			border-radius: 999px;
+			background: #e5e7eb;
+		}
+
+		input[type="range"]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: #111827;
+			border: 2px solid #0ea5e9;
+		}
+
+		input[type="range"]::-moz-range-thumb {
+			width: 28px;
+			height: 28px;
+			border: none;
+			border-radius: 50%;
+			background: #111827;
+		}
+
+		@media (max-width: 700px) {
+			body {
+				align-items: stretch;
+			}
+
+			.app {
+				flex-direction: column;
+				padding: 12px;
+				gap: 12px;
+			}
+
+			.controls {
+				max-width: 100%;
+			}
+
+			canvas {
+				max-width: 100%;
+			}
+
+			.grid2 {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="stage">
-      <canvas id="canvas" width="800" height="1200"></canvas>
-    </div>
-  <div class="controls">
-    <div class="row">
-      <label>Загрузить фото</label>
-      <input type="file" id="fileInput" accept="image/*">
-      <div class="btns">
-        <button id="replaceBtn" class="secondary">Заменить фото</button>
-        <button id="removeBtn" class="secondary">Удалить фото</button>
-      </div>
-      <small class="hint">Холст авто‑масштабируется под качество фото (до ~1600px по ширине) и экспортируется в полном размере.</small>
-    </div>
+	<div class="app">
+		<div class="stage">
+			<canvas id="canvas" width="800" height="1200"></canvas>
+		</div>
+		<div class="controls">
+			<div class="row">
+				<label>Загрузить фото</label>
+				<input type="file" id="fileInput" accept="image/*">
+				<div class="btns">
+					<button id="replaceBtn" class="secondary">Заменить фото</button>
+					<button id="removeBtn" class="secondary">Удалить фото</button>
+				</div>
+				<small class="hint">Холст авто‑масштабируется под качество фото (до ~1600px по ширине) и экспортируется в полном
+					размере.</small>
+			</div>
 
-    <div class="row">
-      <label for="topText">Верхний текст</label>
-      <input type="text" id="topText" value="Любовь это… / Love is…">
-      <div class="grid2">
-        <div class="row">
-          <label for="topFont">Шрифт верхнего текста</label>
-          <select id="topFont">
-            <option value="Marck Script" selected>Marck Script (рукописный)</option>
-            <option value="Poiret One">Poiret One (элегантный)</option>
-            <option value="Pacifico">Pacifico (романтичный)</option>
-            <option value="Lobster">Lobster (афиша)</option>
-            <option value="Comfortaa">Comfortaa (геометр.)</option>
-            <option value="Russo One">Russo One (жирный)</option>
-            <option value="Montserrat">Montserrat (универс.)</option>
-          </select>
-        </div>
-        <div class="row">
-          <label for="topSize">Размер верхнего текста</label>
-          <input type="range" id="topSize" min="24" max="96" step="1" value="48">
-        </div>
-      </div>
-    </div>
+			<div class="row">
+				<label for="topText">Верхний текст</label>
+				<input type="text" id="topText" value="Дружба это… / Friendship is…">
+				<div class="grid2">
+					<div class="row">
+						<label for="topFont">Шрифт верхнего текста</label>
+						<select id="topFont">
+							<option value="Marck Script" selected>Marck Script (рукописный)</option>
+							<option value="Poiret One">Poiret One (элегантный)</option>
+							<option value="Pacifico">Pacifico (романтичный)</option>
+							<option value="Lobster">Lobster (афиша)</option>
+							<option value="Comfortaa">Comfortaa (геометр.)</option>
+							<option value="Russo One">Russo One (жирный)</option>
+							<option value="Montserrat">Montserrat (универс.)</option>
+						</select>
+					</div>
+					<div class="row">
+						<label for="topSize">Размер верхнего текста</label>
+						<input type="range" id="topSize" min="24" max="96" step="1" value="56">
+					</div>
+				</div>
+			</div>
 
-    <div class="row">
-      <label for="bottomText">Нижний текст</label>
-      <input type="text" id="bottomText" value="…слышать сердцебиение друг друга.">
-      <div class="grid2">
-        <div class="row">
-          <label for="bottomFont">Шрифт нижнего текста</label>
-          <select id="bottomFont">
-            <option value="Poiret One" selected>Poiret One (элегантный)</option>
-            <option value="Marck Script">Marck Script (рукописный)</option>
-            <option value="Pacifico">Pacifico (романтичный)</option>
-            <option value="Lobster">Lobster (афиша)</option>
-            <option value="Comfortaa">Comfortaa (геометр.)</option>
-            <option value="Russo One">Russo One (жирный)</option>
-            <option value="Montserrat">Montserrat (универс.)</option>
-          </select>
-        </div>
-        <div class="row">
-          <label for="bottomSize">Размер нижнего текста</label>
-          <input type="range" id="bottomSize" min="20" max="80" step="1" value="40">
-        </div>
-      </div>
-    </div>
+			<div class="row">
+				<label for="bottomText">Нижний текст</label>
+				<input type="text" id="bottomText" value="Быть рядом, когда ты далеко">
+				<div class="grid2">
+					<div class="row">
+						<label for="bottomFont">Шрифт нижнего текста</label>
+						<select id="bottomFont">
+							<option value="Poiret One" selected>Poiret One (элегантный)</option>
+							<option value="Marck Script">Marck Script (рукописный)</option>
+							<option value="Pacifico">Pacifico (романтичный)</option>
+							<option value="Lobster">Lobster (афиша)</option>
+							<option value="Comfortaa">Comfortaa (геометр.)</option>
+							<option value="Russo One">Russo One (жирный)</option>
+							<option value="Montserrat">Montserrat (универс.)</option>
+						</select>
+					</div>
+					<div class="row">
+						<label for="bottomSize">Размер нижнего текста</label>
+						<input type="range" id="bottomSize" min="20" max="80" step="1" value="44">
+					</div>
+				</div>
+			</div>
 
-    <div class="row">
-      <label for="frameThick">Толщина рамки</label>
-      <input type="range" id="frameThick" min="1" max="20" step="1" value="2">
-    </div>
+			<div class="row">
+				<label for="frameThick">Толщина рамки</label>
+				<input type="range" id="frameThick" min="1" max="40" step="1" value="8">
+			</div>
 
-    <div class="btns">
-      <button id="download">Скачать PNG</button>
-    </div>
-  </div>
-  </div>
+			<div class="row">
+				<label for="outerMargin">Отступ рамки от края холста</label>
+				<input type="range" id="outerMargin" min="0" max="120" step="1" value="24">
+			</div>
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const BASE_W = 800, BASE_H = 1200;
-    // масштаб предпросмотра под экран (CSS управляет шириной), реальный экспорт по пикселям canvas
-    function fitCanvasForMobile(){
-      // ничего не меняем в пикселях canvas — только визуальная ширина через CSS уже адаптивна
-      // оставлено для будущих доработок (например, devicePixelRatio масштаб экспорта)
-    }
-    fitCanvasForMobile();
+			<div class="row">
+				<label for="contentPad">Отступы внутри рамки (поля)</label>
+				<input type="range" id="contentPad" min="10" max="80" step="1" value="24">
+			</div>
 
-    const fileInput = document.getElementById('fileInput');
-    const topTextInput = document.getElementById('topText');
-    const bottomTextInput = document.getElementById('bottomText');
-    const downloadBtn = document.getElementById('download');
-    const replaceBtn = document.getElementById('replaceBtn');
-    const removeBtn = document.getElementById('removeBtn');
-    const topFontSel = document.getElementById('topFont');
-    const bottomFontSel = document.getElementById('bottomFont');
-    const topSizeEl = document.getElementById('topSize');
-    const bottomSizeEl = document.getElementById('bottomSize');
-    const frameThickEl = document.getElementById('frameThick');
+			<div class="btns">
+				<button id="download">Скачать PNG</button>
+			</div>
+		</div>
+	</div>
 
-    const FONT_MAP = {
-      'Marck Script': '"Marck Script", cursive',
-      'Poiret One': '"Poiret One", cursive',
-      'Lobster': '"Lobster", cursive',
-      'Comfortaa': '"Comfortaa", cursive',
-      'Pacifico': '"Pacifico", cursive',
-      'Russo One': '"Russo One", sans-serif',
-      'Montserrat': '"Montserrat", sans-serif'
-    };
+	<script>
+		const canvas = document.getElementById('canvas')
+		const ctx = canvas.getContext('2d')
+		const BASE_W = 800, BASE_H = 1200
 
-    let img = null;
+		const fileInput = document.getElementById('fileInput')
+		const topTextInput = document.getElementById('topText')
+		const bottomTextInput = document.getElementById('bottomText')
+		const downloadBtn = document.getElementById('download')
+		const replaceBtn = document.getElementById('replaceBtn')
+		const removeBtn = document.getElementById('removeBtn')
+		const topFontSel = document.getElementById('topFont')
+		const bottomFontSel = document.getElementById('bottomFont')
+		const topSizeEl = document.getElementById('topSize')
+		const bottomSizeEl = document.getElementById('bottomSize')
+		const frameThickEl = document.getElementById('frameThick')
+		const outerMarginEl = document.getElementById('outerMargin')
+		const contentPadEl = document.getElementById('contentPad')
 
-    function drawHeart(ctx, cx, cy, r, color){
-      ctx.save(); ctx.translate(cx, cy); ctx.beginPath();
-      for(let a=0; a<Math.PI*2; a+=0.02){
-        const x = r*16*Math.pow(Math.sin(a),3)/16;
-        const y = -r*(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16;
-        if(a===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      }
-      ctx.fillStyle = color; ctx.fill(); ctx.restore();
-    }
+		const FONT_MAP = {
+			'Marck Script': '"Marck Script", cursive',
+			'Poiret One': '"Poiret One", cursive',
+			'Lobster': '"Lobster", cursive',
+			'Comfortaa': '"Comfortaa", cursive',
+			'Pacifico': '"Pacifico", cursive',
+			'Russo One': '"Russo One", sans-serif',
+			'Montserrat': '"Montserrat", sans-serif'
+		}
 
-    function draw() {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+		let img = null
 
-      // Рамка карточки
-      const border = parseInt(frameThickEl.value || '2', 10);
-      ctx.strokeStyle = '#111';
-      ctx.lineWidth = border;
-      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+		// Helpers: draw heart and double frame
+		function drawHeart(cx, cy, r, color) {
+			ctx.save(); ctx.translate(cx, cy); ctx.beginPath()
+			for (let a = 0; a < Math.PI * 2; a += 0.02) {
+				const x = r * 16 * Math.pow(Math.sin(a), 3) / 16
+				const y = -r * (13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) / 16
+				if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+			}
+			ctx.fillStyle = color; ctx.fill(); ctx.restore()
+		}
 
-      // Верхний текст
-      ctx.fillStyle = '#111';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      const topFontFamily = FONT_MAP[topFontSel.value] || FONT_MAP['Marck Script'];
-      const topSize = parseInt(topSizeEl.value || '48', 10);
-      ctx.font = `${topSize}px ${topFontFamily}`;
-      ctx.fillText(topTextInput.value, 40, 90);
+		function layout() {
+			const border = parseInt(frameThickEl.value || '8', 10)
+			const margin = parseInt(outerMarginEl.value || '24', 10) // отступ рамки от края холста
+			const pad = parseInt(contentPadEl.value || '24', 10)    // поля внутри рамки
 
-      // Фото
-      if (img) {
-        const maxWidth = canvas.width - 80;
-        const maxHeight = canvas.height - 300;
-        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
-        const newWidth = img.width * ratio;
-        const newHeight = img.height * ratio;
-        const x = (canvas.width - newWidth) / 2;
-        const y = (canvas.height - newHeight) / 2;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, x, y, newWidth, newHeight);
-      }
+			const frame = { x: margin, y: margin, w: canvas.width - margin * 2, h: canvas.height - margin * 2 }
+			const content = { x: frame.x + pad, y: frame.y + pad, w: frame.w - pad * 2, h: frame.h - pad * 2 }
 
-      // Сердечки — поверх фото
-      drawHeart(ctx, canvas.width - 130, 100, 36, '#e11d48');
-      drawHeart(ctx, canvas.width - 100, 120, 32, '#ef4444');
+			const topSize = parseInt(topSizeEl.value || '56', 10)
+			const bottomSize = parseInt(bottomSizeEl.value || '44', 10)
+			const topAreaH = Math.round(topSize * 1.6)
+			const bottomAreaH = Math.round(bottomSize * 1.6)
 
-      // Нижний текст
-      ctx.textAlign = 'center';
-      const bottomFontFamily = FONT_MAP[bottomFontSel.value] || FONT_MAP['Poiret One'];
-      const bottomSize = parseInt(bottomSizeEl.value || '40', 10);
-      ctx.font = `${bottomSize}px ${bottomFontFamily}`;
-      ctx.fillText(bottomTextInput.value, canvas.width / 2, canvas.height - 80);
-    }
+			const usableH = Math.max(120, content.h - topAreaH - bottomAreaH)
+			const photo = { x: content.x, y: content.y + topAreaH, w: content.w, h: usableH }
 
-    function loadFile(file){
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        img = new Image();
-        img.onload = () => {
-          const scaleFactor = Math.min(img.width, 1600) / BASE_W;
-          canvas.width = Math.round(BASE_W * scaleFactor);
-          canvas.height = Math.round(BASE_H * scaleFactor);
-          draw();
-        };
-        img.src = evt.target.result;
-      }
-      reader.readAsDataURL(file);
-    }
+			const heartBase = Math.max(18, Math.round(topSize * 0.45))
+			const h2 = { x: frame.x + frame.w - (heartBase + 18), y: frame.y + 24, r: heartBase }
+			const h1 = { x: h2.x - Math.round(heartBase * 0.9), y: h2.y - Math.round(heartBase * 0.35), r: Math.round(heartBase * 0.9) }
 
-    fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
+			return { border, frame, content, photo, hearts: [h1, h2] }
+		}
 
-    replaceBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
-    removeBtn.addEventListener('click', () => { img = null; canvas.width = BASE_W; canvas.height = BASE_H; draw(); });
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			ctx.fillStyle = '#fff'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    topTextInput.addEventListener('input', draw);
-    bottomTextInput.addEventListener('input', draw);
-    topFontSel.addEventListener('change', draw);
-    bottomFontSel.addEventListener('change', draw);
-    topSizeEl.addEventListener('input', draw);
-    bottomSizeEl.addEventListener('input', draw);
-    frameThickEl.addEventListener('input', draw);
+			const L = layout()
 
-    downloadBtn.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'loveis.png';
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
-    });
+			// Single frame
+			ctx.strokeStyle = '#111'
+			ctx.lineWidth = L.border
+			ctx.strokeRect(L.frame.x, L.frame.y, L.frame.w, L.frame.h)
 
-    draw();
-  </script>
+			// Top text with auto-fit width
+			ctx.fillStyle = '#111'
+			ctx.textAlign = 'left'
+			ctx.textBaseline = 'alphabetic'
+			const topFamily = FONT_MAP[topFontSel.value] || FONT_MAP['Marck Script']
+			const targetTop = parseInt(topSizeEl.value || '56', 10)
+			const maxTopW = L.content.w - (L.hearts[1].r * 2 + 32) // не налезать на сердечки
+			function fitFont(text, family, maxW, size, min = 20) {
+				let s = size; ctx.font = `${s}px ${family}`
+				while (ctx.measureText(text).width > maxW && s > min) { s -= 1; ctx.font = `${s}px ${family}` }
+				return s
+			}
+			const topUsed = fitFont(topTextInput.value, topFamily, maxTopW, targetTop)
+			ctx.font = `${topUsed}px ${topFamily}`
+			ctx.fillText(topTextInput.value, L.content.x + 4, L.content.y + Math.round(topUsed * 0.95))
+
+			// Photo (contain in rect that uses almost all space)
+			if (img) {
+				const iw = img.width, ih = img.height
+				const ratio = Math.min(L.photo.w / iw, L.photo.h / ih)
+				const dw = Math.round(iw * ratio), dh = Math.round(ih * ratio)
+				const dx = Math.round(L.photo.x + (L.photo.w - dw) / 2)
+				const dy = Math.round(L.photo.y + (L.photo.h - dh) / 2)
+				// subtle bg to show frame even if image not full
+				ctx.fillStyle = '#eeeeee'
+				ctx.fillRect(L.photo.x, L.photo.y, L.photo.w, L.photo.h)
+				ctx.imageSmoothingQuality = 'high'
+				ctx.drawImage(img, dx, dy, dw, dh)
+			} else {
+				// placeholder area
+				ctx.fillStyle = '#f1f5f9'
+				ctx.fillRect(L.photo.x, L.photo.y, L.photo.w, L.photo.h)
+				ctx.strokeStyle = '#cbd5e1'
+				ctx.setLineDash([6, 6])
+				ctx.strokeRect(L.photo.x, L.photo.y, L.photo.w, L.photo.h)
+				ctx.setLineDash([])
+			}
+
+			// Hearts above photo
+			drawHeart(L.hearts[0].x, L.hearts[0].y, L.hearts[0].r, '#e11d48')
+			drawHeart(L.hearts[1].x, L.hearts[1].y, L.hearts[1].r, '#ef4444')
+
+			// Bottom caption (centered) with auto-fit
+			ctx.fillStyle = '#000'
+			ctx.textAlign = 'center'
+			const bottomFamily = FONT_MAP[bottomFontSel.value] || FONT_MAP['Poiret One']
+			const targetBottom = parseInt(bottomSizeEl.value || '44', 10)
+			const maxBottomW = L.content.w - 16
+			const bottomUsed = (function () {
+				let s = targetBottom; ctx.font = `${s}px ${bottomFamily}`
+				while (ctx.measureText(bottomTextInput.value).width > maxBottomW && s > 18) { s -= 1; ctx.font = `${s}px ${bottomFamily}` }
+				return s
+			})()
+			ctx.font = `${bottomUsed}px ${bottomFamily}`
+			ctx.fillText(bottomTextInput.value, L.content.x + L.content.w / 2, L.content.y + L.content.h - 8)
+		}
+
+		function loadFile(file) {
+			if (!file) return
+			const reader = new FileReader()
+			reader.onload = function (evt) {
+				img = new Image()
+				img.onload = () => {
+					const scaleFactor = Math.min(img.width, 1600) / BASE_W
+					canvas.width = Math.round(BASE_W * scaleFactor)
+					canvas.height = Math.round(BASE_H * scaleFactor)
+					draw()
+				}
+				img.src = evt.target.result
+			}
+			reader.readAsDataURL(file)
+		}
+
+		fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]))
+		replaceBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click() })
+		removeBtn.addEventListener('click', () => { img = null; canvas.width = BASE_W; canvas.height = BASE_H; draw() })
+
+		topTextInput.addEventListener('input', draw)
+		bottomTextInput.addEventListener('input', draw)
+		topFontSel.addEventListener('change', draw)
+		bottomFontSel.addEventListener('change', draw)
+		topSizeEl.addEventListener('input', draw)
+		bottomSizeEl.addEventListener('input', draw)
+		frameThickEl.addEventListener('input', draw)
+		outerMarginEl.addEventListener('input', draw)
+		contentPadEl.addEventListener('input', draw)
+
+		downloadBtn.addEventListener('click', () => {
+			const link = document.createElement('a')
+			link.download = 'loveis.png'
+			link.href = canvas.toDataURL('image/png', 1.0)
+			link.click()
+		})
+
+		draw();
+	</script>
 </body>
+
 </html>
