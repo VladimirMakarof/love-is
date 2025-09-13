@@ -20,17 +20,13 @@
 
 		html,
 		body {
-			height: 100%
+			height: auto
 		}
 
 		body {
 			margin: 0;
 			background: var(--bg);
 			font-family: 'Montserrat', system-ui;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			min-height: 100vh;
 		}
 
 		.app {
@@ -39,6 +35,7 @@
 			gap: 16px;
 			padding: 16px;
 			width: min(1100px, 100%);
+			margin: 12px auto;
 		}
 
 		canvas {
@@ -152,14 +149,22 @@
 		}
 
 		@media (max-width: 700px) {
+
+			html,
 			body {
-				align-items: stretch;
+				height: auto
+			}
+
+			body {
+				padding: max(8px, env(safe-area-inset-top)) 8px 12px;
 			}
 
 			.app {
 				flex-direction: column;
 				padding: 12px;
 				gap: 12px;
+				width: 100%;
+				margin: 0 auto;
 			}
 
 			.controls {
@@ -304,11 +309,14 @@
 		}
 
 		function layout() {
+			// Рассчитываем всё в базовых координатах BASE_W×BASE_H,
+			// чтобы шрифты и элементы не «сжимались» при больших фото
+			const W = BASE_W, H = BASE_H
 			const border = parseInt(frameThickEl.value || '8', 10)
 			const margin = parseInt(outerMarginEl.value || '24', 10) // отступ рамки от края холста
 			const pad = parseInt(contentPadEl.value || '24', 10)    // поля внутри рамки
 
-			const frame = { x: margin, y: margin, w: canvas.width - margin * 2, h: canvas.height - margin * 2 }
+			const frame = { x: margin, y: margin, w: W - margin * 2, h: H - margin * 2 }
 			const content = { x: frame.x + pad, y: frame.y + pad, w: frame.w - pad * 2, h: frame.h - pad * 2 }
 
 			const topSize = parseInt(topSizeEl.value || '56', 10)
@@ -319,17 +327,31 @@
 			const usableH = Math.max(120, content.h - topAreaH - bottomAreaH)
 			const photo = { x: content.x, y: content.y + topAreaH, w: content.w, h: usableH }
 
-			const heartBase = Math.max(18, Math.round(topSize * 0.45))
-			const h2 = { x: frame.x + frame.w - (heartBase + 18), y: frame.y + 24, r: heartBase }
-			const h1 = { x: h2.x - Math.round(heartBase * 0.9), y: h2.y - Math.round(heartBase * 0.35), r: Math.round(heartBase * 0.9) }
+			// Сердечки привязываем к правому верхнему углу фото, НО выводим их
+			// за пределы изображения (чтобы не закрывали фото). Масштаб — от размера фото.
+			const hb = Math.max(18, Math.round(Math.min(photo.w, photo.h) * 0.09))
+			const outX = Math.round(hb * 0.55), outY = Math.round(hb * 0.55)
+			let hx = photo.x + photo.w + outX   // уходим вправо от угла фото
+			let hy = photo.y - outY              // уходим вверх от угла фото
+			// Держим сердечки внутри рамки
+			hx = Math.min(frame.x + frame.w - hb - 4, hx)
+			hy = Math.max(frame.y + hb + 4, hy)
+			const hFront = { x: hx, y: hy, r: hb }                                   // верхнее правое (на переднем плане)
+			const hBack = { x: hx - Math.round(hb * 0.65), y: hy + Math.round(hb * 0.45), r: Math.round(hb * 0.9) } // нижнее левее
 
-			return { border, frame, content, photo, hearts: [h1, h2] }
+			return { border, frame, content, photo, hearts: [hBack, hFront] }
 		}
 
 		function draw() {
+			// Рисуем в постоянной виртуальной системе координат BASE_W×BASE_H,
+			// а к реальному размеру холста приводим масштабом. Так шрифты/элементы
+			// выглядят одинаково и при больших фото.
+			ctx.setTransform(1, 0, 0, 1, 0, 0)
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			const s = canvas.width / BASE_W
+			ctx.setTransform(s, 0, 0, s, 0, 0)
 			ctx.fillStyle = '#fff'
-			ctx.fillRect(0, 0, canvas.width, canvas.height)
+			ctx.fillRect(0, 0, BASE_W, BASE_H)
 
 			const L = layout()
 
@@ -344,7 +366,7 @@
 			ctx.textBaseline = 'alphabetic'
 			const topFamily = FONT_MAP[topFontSel.value] || FONT_MAP['Marck Script']
 			const targetTop = parseInt(topSizeEl.value || '56', 10)
-			const maxTopW = L.content.w - (L.hearts[1].r * 2 + 32) // не налезать на сердечки
+			const maxTopW = L.content.w - 16 // сердечки вне фото, не мешают заголовку // не налезать на сердечки
 			function fitFont(text, family, maxW, size, min = 20) {
 				let s = size; ctx.font = `${s}px ${family}`
 				while (ctx.measureText(text).width > maxW && s > min) { s -= 1; ctx.font = `${s}px ${family}` }
@@ -362,8 +384,7 @@
 				const dx = Math.round(L.photo.x + (L.photo.w - dw) / 2)
 				const dy = Math.round(L.photo.y + (L.photo.h - dh) / 2)
 				// subtle bg to show frame even if image not full
-				ctx.fillStyle = '#eeeeee'
-				ctx.fillRect(L.photo.x, L.photo.y, L.photo.w, L.photo.h)
+
 				ctx.imageSmoothingQuality = 'high'
 				ctx.drawImage(img, dx, dy, dw, dh)
 			} else {
