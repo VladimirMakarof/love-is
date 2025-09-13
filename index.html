@@ -5,40 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Love‑Is Style Collage — Pure HTML/CSS/JS</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&display=swap');
+    /* Подключаем несколько гарнитур с красивой кириллицей */
+    @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&family=Lobster&family=Comfortaa:wght@400;700&family=Pacifico&family=Russo+One&family=Montserrat:wght@500;700&display=swap');
 
     body {
       margin: 0;
-      font-family: 'Marck Script', cursive;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background: #eee;
+      min-height: 100vh;
+      background: #f3f4f6;
     }
     canvas {
-      border: 2px solid black;
+      border: 2px solid #111;
       background: white;
-      max-width: 400px;
+      max-width: 420px; /* предпросмотр не огромный */
       height: auto;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
     .controls {
       margin-left: 20px;
-      font-family: 'Poiret One', cursive;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-width: 420px;
+      padding: 10px 0;
     }
-    label, input, button {
-      font-family: 'Poiret One', cursive;
+    .controls label { display:block; font-size:14px; color:#111; margin-bottom:4px; }
+    .controls input[type="text"], .controls select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background:#fff;
+      font-size:14px;
     }
+    .row { display:grid; gap:6px; }
+    .btns { display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 12px; }
     button {
-      padding: 6px 12px;
-      border: 1px solid #333;
-      background: #f5f5f5;
+      padding: 8px 12px;
+      border: 1px solid #111827;
+      background: #111827;
+      color:#fff;
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-weight:600;
     }
-    button:hover {
-      background: #ddd;
-    }
+    button.secondary{ background:#fff; color:#111827; }
+    button:hover { filter: brightness(1.05); }
   </style>
 </head>
 <body>
@@ -46,20 +62,48 @@
     <canvas id="canvas" width="800" height="1200"></canvas>
   </div>
   <div class="controls">
-    <div>
-      <label>Загрузить фото: <input type="file" id="fileInput" accept="image/*"></label>
+    <div class="row">
+      <label>Загрузить фото</label>
+      <input type="file" id="fileInput" accept="image/*">
+      <div class="btns">
+        <button id="replaceBtn" class="secondary">Заменить фото</button>
+        <button id="removeBtn" class="secondary">Удалить фото</button>
+      </div>
     </div>
-    <div style="margin:8px 0 16px; display:flex; gap:8px; flex-wrap:wrap;">
-      <button id="replaceBtn">Заменить фото</button>
-      <button id="removeBtn">Удалить фото</button>
+
+    <div class="row">
+      <label for="topText">Верхний текст</label>
+      <input type="text" id="topText" value="Любовь это… / Love is…">
+      <label for="topFont">Шрифт верхнего текста</label>
+      <select id="topFont">
+        <option value="Marck Script" selected>Marck Script (рукописный)</option>
+        <option value="Poiret One">Poiret One (элегантный)</option>
+        <option value="Pacifico">Pacifico (романтичный)</option>
+        <option value="Lobster">Lobster (афиша)</option>
+        <option value="Comfortaa">Comfortaa (мягкий геометр.)</option>
+        <option value="Russo One">Russo One (жирный гротеск)</option>
+        <option value="Montserrat">Montserrat (универсальный)</option>
+      </select>
     </div>
-    <div>
-      <label>Верхний текст: <input type="text" id="topText" value="Любовь это… / Love is…"></label>
+
+    <div class="row">
+      <label for="bottomText">Нижний текст</label>
+      <input type="text" id="bottomText" value="…слышать сердцебиение друг друга.">
+      <label for="bottomFont">Шрифт нижнего текста</label>
+      <select id="bottomFont">
+        <option value="Poiret One" selected>Poiret One (элегантный)</option>
+        <option value="Marck Script">Marck Script (рукописный)</option>
+        <option value="Pacifico">Pacifico (романтичный)</option>
+        <option value="Lobster">Lobster (афиша)</option>
+        <option value="Comfortaa">Comfortaa (мягкий геометр.)</option>
+        <option value="Russo One">Russo One (жирный гротеск)</option>
+        <option value="Montserrat">Montserrat (универсальный)</option>
+      </select>
     </div>
-    <div>
-      <label>Нижний текст: <input type="text" id="bottomText" value="…слышать сердцебиение друг друга."></label>
+
+    <div class="btns">
+      <button id="download">Скачать PNG</button>
     </div>
-    <button id="download">Скачать</button>
   </div>
 
   <script>
@@ -73,6 +117,19 @@
     const downloadBtn = document.getElementById('download');
     const replaceBtn = document.getElementById('replaceBtn');
     const removeBtn = document.getElementById('removeBtn');
+    const topFontSel = document.getElementById('topFont');
+    const bottomFontSel = document.getElementById('bottomFont');
+
+    // Отображаемые гарнитуры -> CSS font-family для canvas
+    const FONT_MAP = {
+      'Marck Script': '"Marck Script", cursive',
+      'Poiret One': '"Poiret One", cursive',
+      'Lobster': '"Lobster", cursive',
+      'Comfortaa': '"Comfortaa", cursive',
+      'Pacifico': '"Pacifico", cursive',
+      'Russo One': '"Russo One", sans-serif',
+      'Montserrat': '"Montserrat", sans-serif'
+    };
 
     let img = null;
 
@@ -94,67 +151,63 @@
       ctx.fillStyle = 'white';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = 'black';
+      // Рамка карточки
+      ctx.strokeStyle = '#111';
       ctx.lineWidth = 2;
       ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-      ctx.fillStyle = 'black';
-      ctx.font = '48px "Marck Script", cursive';
+      // Верхний текст
+      ctx.fillStyle = '#111';
       ctx.textAlign = 'left';
-      ctx.fillText(topTextInput.value, 40, 80);
+      ctx.textBaseline = 'alphabetic';
+      const topFontFamily = FONT_MAP[topFontSel.value] || FONT_MAP['Marck Script'];
+      ctx.font = `48px ${topFontFamily}`;
+      ctx.fillText(topTextInput.value, 40, 90);
 
-      drawHeart(ctx, canvas.width - 160, 100, 32, 'red');
-      drawHeart(ctx, canvas.width - 110, 120, 28, 'red');
+      // Сердечки в правом верхнем углу
+      drawHeart(ctx, canvas.width - 160, 110, 32, '#e11d48');
+      drawHeart(ctx, canvas.width - 110, 130, 28, '#ef4444');
 
+      // Нижний текст
       ctx.textAlign = 'center';
-      ctx.font = '40px "Poiret One", cursive';
+      const bottomFontFamily = FONT_MAP[bottomFontSel.value] || FONT_MAP['Poiret One'];
+      ctx.font = `40px ${bottomFontFamily}`;
       ctx.fillText(bottomTextInput.value, canvas.width / 2, canvas.height - 80);
 
+      // Фото (вписываем без обрезки)
       if (img) {
         const maxWidth = canvas.width - 80;
-        const maxHeight = canvas.height - 280;
+        const maxHeight = canvas.height - 300;
         const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
-
         const newWidth = img.width * ratio;
         const newHeight = img.height * ratio;
         const x = (canvas.width - newWidth) / 2;
         const y = (canvas.height - newHeight) / 2;
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, x, y, newWidth, newHeight);
       }
     }
 
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          img = new Image();
-          img.onload = () => {
-            // динамическое увеличение canvas под качество фото
-            const scaleFactor = Math.min(img.width, 1600) / 800; // ограничим до 1600px ширины
-            canvas.width = 800 * scaleFactor;
-            canvas.height = 1200 * scaleFactor;
-            draw();
-          };
-          img.src = evt.target.result;
-        }
-        reader.readAsDataURL(file);
+    function loadFile(file){
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        img = new Image();
+        img.onload = () => {
+          // Авто‑масштаб под качество фото, ограничение по ширине 1600
+          const scaleFactor = Math.min(img.width, 1600) / BASE_W;
+          canvas.width = Math.round(BASE_W * scaleFactor);
+          canvas.height = Math.round(BASE_H * scaleFactor);
+          draw();
+        };
+        img.src = evt.target.result;
       }
-    });
+      reader.readAsDataURL(file);
+    }
 
-    topTextInput.addEventListener('input', draw);
-    bottomTextInput.addEventListener('input', draw);
+    fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
 
-    downloadBtn.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'loveis.png';
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
-    });
-
-    // Replace & remove photo
     replaceBtn.addEventListener('click', () => {
-      // позволяем выбрать тот же файл снова
       fileInput.value = '';
       fileInput.click();
     });
@@ -165,6 +218,14 @@
       canvas.height = BASE_H;
       draw();
     });
+
+    topTextInput.addEventListener('input', draw);
+    bottomTextInput.addEventListener('input', draw);
+    topFontSel.addEventListener('change', draw);
+    bottomFontSel.addEventListener('change', draw);
+
+    downloadBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
       link.download = 'loveis.png';
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
