@@ -1,161 +1,176 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Love‑Is Style Collage — Pure HTML/CSS/JS</title>
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Love‑Is Style Collage — Pure HTML/CSS/JS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&display=swap');
 
-		body {
-			margin: 0;
-			font-family: 'Marck Script', cursive;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-			background: #eee;
-		}
-
-		canvas {
-			border: 2px solid black;
-			background: white;
-			max-width: 400px;
-			height: auto;
-		}
-
-		.controls {
-			margin-left: 20px;
-			font-family: 'Poiret One', cursive;
-		}
-
-		label,
-		input,
-		button {
-			font-family: 'Poiret One', cursive;
-		}
-
-		button {
-			padding: 6px 12px;
-			border: 1px solid #333;
-			background: #f5f5f5;
-			cursor: pointer;
-			border-radius: 6px;
-		}
-
-		button:hover {
-			background: #ddd;
-		}
-	</style>
+    body {
+      margin: 0;
+      font-family: 'Marck Script', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eee;
+    }
+    canvas {
+      border: 2px solid black;
+      background: white;
+      max-width: 400px;
+      height: auto;
+    }
+    .controls {
+      margin-left: 20px;
+      font-family: 'Poiret One', cursive;
+    }
+    label, input, button {
+      font-family: 'Poiret One', cursive;
+    }
+    button {
+      padding: 6px 12px;
+      border: 1px solid #333;
+      background: #f5f5f5;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #ddd;
+    }
+  </style>
 </head>
-
 <body>
-	<div>
-		<canvas id="canvas" width="800" height="1200"></canvas>
-	</div>
-	<div class="controls">
-		<div>
-			<label>Загрузить фото: <input type="file" id="fileInput" accept="image/*"></label>
-		</div>
-		<div>
-			<label>Верхний текст: <input type="text" id="topText" value="Любовь это… / Love is…"></label>
-		</div>
-		<div>
-			<label>Нижний текст: <input type="text" id="bottomText" value="…слышать сердцебиение друг друга."></label>
-		</div>
-		<button id="download">Скачать</button>
-	</div>
+  <div>
+    <canvas id="canvas" width="800" height="1200"></canvas>
+  </div>
+  <div class="controls">
+    <div>
+      <label>Загрузить фото: <input type="file" id="fileInput" accept="image/*"></label>
+    </div>
+    <div style="margin:8px 0 16px; display:flex; gap:8px; flex-wrap:wrap;">
+      <button id="replaceBtn">Заменить фото</button>
+      <button id="removeBtn">Удалить фото</button>
+    </div>
+    <div>
+      <label>Верхний текст: <input type="text" id="topText" value="Любовь это… / Love is…"></label>
+    </div>
+    <div>
+      <label>Нижний текст: <input type="text" id="bottomText" value="…слышать сердцебиение друг друга."></label>
+    </div>
+    <button id="download">Скачать</button>
+  </div>
 
-	<script>
-		const canvas = document.getElementById('canvas')
-		const ctx = canvas.getContext('2d')
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const BASE_W = 800, BASE_H = 1200;
 
-		const fileInput = document.getElementById('fileInput')
-		const topTextInput = document.getElementById('topText')
-		const bottomTextInput = document.getElementById('bottomText')
-		const downloadBtn = document.getElementById('download')
+    const fileInput = document.getElementById('fileInput');
+    const topTextInput = document.getElementById('topText');
+    const bottomTextInput = document.getElementById('bottomText');
+    const downloadBtn = document.getElementById('download');
+    const replaceBtn = document.getElementById('replaceBtn');
+    const removeBtn = document.getElementById('removeBtn');
 
-		let img = null
+    let img = null;
 
-		function drawHeart(ctx, cx, cy, r, color) {
-			ctx.save()
-			ctx.translate(cx, cy)
-			ctx.beginPath()
-			for (let a = 0; a < Math.PI * 2; a += 0.02) {
-				const x = r * 16 * Math.pow(Math.sin(a), 3) / 16
-				const y = -r * (13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) / 16
-				if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-			}
-			ctx.fillStyle = color
-			ctx.fill()
-			ctx.restore()
-		}
+    function drawHeart(ctx, cx, cy, r, color){
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.beginPath();
+      for(let a=0; a<Math.PI*2; a+=0.02){
+        const x = r*16*Math.pow(Math.sin(a),3)/16;
+        const y = -r*(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16;
+        if(a===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
 
-		function draw() {
-			ctx.fillStyle = 'white'
-			ctx.fillRect(0, 0, canvas.width, canvas.height)
+    function draw() {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			ctx.strokeStyle = 'black'
-			ctx.lineWidth = 2
-			ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20)
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-			ctx.fillStyle = 'black'
-			ctx.font = '48px "Marck Script", cursive'
-			ctx.textAlign = 'left'
-			ctx.fillText(topTextInput.value, 40, 80)
+      ctx.fillStyle = 'black';
+      ctx.font = '48px "Marck Script", cursive';
+      ctx.textAlign = 'left';
+      ctx.fillText(topTextInput.value, 40, 80);
 
-			drawHeart(ctx, canvas.width - 160, 100, 32, 'red')
-			drawHeart(ctx, canvas.width - 110, 120, 28, 'red')
+      drawHeart(ctx, canvas.width - 160, 100, 32, 'red');
+      drawHeart(ctx, canvas.width - 110, 120, 28, 'red');
 
-			ctx.textAlign = 'center'
-			ctx.font = '40px "Poiret One", cursive'
-			ctx.fillText(bottomTextInput.value, canvas.width / 2, canvas.height - 80)
+      ctx.textAlign = 'center';
+      ctx.font = '40px "Poiret One", cursive';
+      ctx.fillText(bottomTextInput.value, canvas.width / 2, canvas.height - 80);
 
-			if (img) {
-				const maxWidth = canvas.width - 80
-				const maxHeight = canvas.height - 280
-				const ratio = Math.min(maxWidth / img.width, maxHeight / img.height)
+      if (img) {
+        const maxWidth = canvas.width - 80;
+        const maxHeight = canvas.height - 280;
+        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
 
-				const newWidth = img.width * ratio
-				const newHeight = img.height * ratio
-				const x = (canvas.width - newWidth) / 2
-				const y = (canvas.height - newHeight) / 2
-				ctx.drawImage(img, x, y, newWidth, newHeight)
-			}
-		}
+        const newWidth = img.width * ratio;
+        const newHeight = img.height * ratio;
+        const x = (canvas.width - newWidth) / 2;
+        const y = (canvas.height - newHeight) / 2;
+        ctx.drawImage(img, x, y, newWidth, newHeight);
+      }
+    }
 
-		fileInput.addEventListener('change', (e) => {
-			const file = e.target.files[0]
-			if (file) {
-				const reader = new FileReader()
-				reader.onload = function (evt) {
-					img = new Image()
-					img.onload = () => {
-						// динамическое увеличение canvas под качество фото
-						const scaleFactor = Math.min(img.width, 1600) / 800 // ограничим до 1600px ширины
-						canvas.width = 800 * scaleFactor
-						canvas.height = 1200 * scaleFactor
-						draw()
-					}
-					img.src = evt.target.result
-				}
-				reader.readAsDataURL(file)
-			}
-		})
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          img = new Image();
+          img.onload = () => {
+            // динамическое увеличение canvas под качество фото
+            const scaleFactor = Math.min(img.width, 1600) / 800; // ограничим до 1600px ширины
+            canvas.width = 800 * scaleFactor;
+            canvas.height = 1200 * scaleFactor;
+            draw();
+          };
+          img.src = evt.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
 
-		topTextInput.addEventListener('input', draw)
-		bottomTextInput.addEventListener('input', draw)
+    topTextInput.addEventListener('input', draw);
+    bottomTextInput.addEventListener('input', draw);
 
-		downloadBtn.addEventListener('click', () => {
-			const link = document.createElement('a')
-			link.download = 'loveis.png'
-			link.href = canvas.toDataURL('image/png', 1.0)
-			link.click()
-		})
+    downloadBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'loveis.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+    });
 
-		draw();
-	</script>
+    // Replace & remove photo
+    replaceBtn.addEventListener('click', () => {
+      // позволяем выбрать тот же файл снова
+      fileInput.value = '';
+      fileInput.click();
+    });
+
+    removeBtn.addEventListener('click', () => {
+      img = null;
+      canvas.width = BASE_W;
+      canvas.height = BASE_H;
+      draw();
+    });
+      link.download = 'loveis.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+    });
+
+    draw();
+  </script>
 </body>
-
 </html>
