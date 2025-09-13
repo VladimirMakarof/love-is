@@ -8,53 +8,26 @@
     /* Подключаем несколько гарнитур с красивой кириллицей */
     @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Poiret+One&family=Lobster&family=Comfortaa:wght@400;700&family=Pacifico&family=Russo+One&family=Montserrat:wght@500;700&display=swap');
 
+    :root{ --ui:#111827; --bd:#cbd5e1; --bg:#f3f4f6; }
     body {
-      margin: 0;
+      margin: 0; background: var(--bg);
       font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #f3f4f6;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh;
     }
     canvas {
-      border: 2px solid #111;
-      background: white;
-      max-width: 420px; /* предпросмотр не огромный */
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      border: 2px solid #111; background: #fff; max-width: 420px; height: auto;
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-    .controls {
-      margin-left: 20px;
-      display: grid;
-      gap: 10px;
-      align-content: start;
-      max-width: 420px;
-      padding: 10px 0;
-    }
+    .controls { margin-left: 20px; display: grid; gap: 10px; align-content: start; max-width: 460px; padding: 10px 0; }
     .controls label { display:block; font-size:14px; color:#111; margin-bottom:4px; }
-    .controls input[type="text"], .controls select {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      background:#fff;
-      font-size:14px;
-    }
+    .controls input[type="text"], .controls select, .controls input[type="range"] { width: 100%; padding: 8px 10px; border: 1px solid var(--bd); border-radius: 8px; background:#fff; font-size:14px; }
     .row { display:grid; gap:6px; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
     .btns { display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 12px; }
-    button {
-      padding: 8px 12px;
-      border: 1px solid #111827;
-      background: #111827;
-      color:#fff;
-      cursor: pointer;
-      border-radius: 8px;
-      font-weight:600;
-    }
-    button.secondary{ background:#fff; color:#111827; }
+    button { padding: 8px 12px; border: 1px solid var(--ui); background: var(--ui); color:#fff; cursor: pointer; border-radius: 8px; font-weight:600; }
+    button.secondary{ background:#fff; color:var(--ui); }
     button:hover { filter: brightness(1.05); }
+    small.hint{color:#475569}
   </style>
 </head>
 <body>
@@ -69,36 +42,58 @@
         <button id="replaceBtn" class="secondary">Заменить фото</button>
         <button id="removeBtn" class="secondary">Удалить фото</button>
       </div>
+      <small class="hint">Холст авто‑масштабируется под качество фото (до ~1600px по ширине) и экспортируется в полном размере.</small>
     </div>
 
     <div class="row">
       <label for="topText">Верхний текст</label>
       <input type="text" id="topText" value="Любовь это… / Love is…">
-      <label for="topFont">Шрифт верхнего текста</label>
-      <select id="topFont">
-        <option value="Marck Script" selected>Marck Script (рукописный)</option>
-        <option value="Poiret One">Poiret One (элегантный)</option>
-        <option value="Pacifico">Pacifico (романтичный)</option>
-        <option value="Lobster">Lobster (афиша)</option>
-        <option value="Comfortaa">Comfortaa (мягкий геометр.)</option>
-        <option value="Russo One">Russo One (жирный гротеск)</option>
-        <option value="Montserrat">Montserrat (универсальный)</option>
-      </select>
+      <div class="grid2">
+        <div class="row">
+          <label for="topFont">Шрифт верхнего текста</label>
+          <select id="topFont">
+            <option value="Marck Script" selected>Marck Script (рукописный)</option>
+            <option value="Poiret One">Poiret One (элегантный)</option>
+            <option value="Pacifico">Pacifico (романтичный)</option>
+            <option value="Lobster">Lobster (афиша)</option>
+            <option value="Comfortaa">Comfortaa (геометр.)</option>
+            <option value="Russo One">Russo One (жирный)</option>
+            <option value="Montserrat">Montserrat (универс.)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="topSize">Размер верхнего текста</label>
+          <input type="range" id="topSize" min="24" max="96" step="1" value="48">
+        </div>
+      </div>
     </div>
 
     <div class="row">
       <label for="bottomText">Нижний текст</label>
       <input type="text" id="bottomText" value="…слышать сердцебиение друг друга.">
-      <label for="bottomFont">Шрифт нижнего текста</label>
-      <select id="bottomFont">
-        <option value="Poiret One" selected>Poiret One (элегантный)</option>
-        <option value="Marck Script">Marck Script (рукописный)</option>
-        <option value="Pacifico">Pacifico (романтичный)</option>
-        <option value="Lobster">Lobster (афиша)</option>
-        <option value="Comfortaa">Comfortaa (мягкий геометр.)</option>
-        <option value="Russo One">Russo One (жирный гротеск)</option>
-        <option value="Montserrat">Montserrat (универсальный)</option>
-      </select>
+      <div class="grid2">
+        <div class="row">
+          <label for="bottomFont">Шрифт нижнего текста</label>
+          <select id="bottomFont">
+            <option value="Poiret One" selected>Poiret One (элегантный)</option>
+            <option value="Marck Script">Marck Script (рукописный)</option>
+            <option value="Pacifico">Pacifico (романтичный)</option>
+            <option value="Lobster">Lobster (афиша)</option>
+            <option value="Comfortaa">Comfortaa (геометр.)</option>
+            <option value="Russo One">Russo One (жирный)</option>
+            <option value="Montserrat">Montserrat (универс.)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="bottomSize">Размер нижнего текста</label>
+          <input type="range" id="bottomSize" min="20" max="80" step="1" value="40">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="frameThick">Толщина рамки</label>
+      <input type="range" id="frameThick" min="1" max="20" step="1" value="2">
     </div>
 
     <div class="btns">
@@ -119,6 +114,9 @@
     const removeBtn = document.getElementById('removeBtn');
     const topFontSel = document.getElementById('topFont');
     const bottomFontSel = document.getElementById('bottomFont');
+    const topSizeEl = document.getElementById('topSize');
+    const bottomSizeEl = document.getElementById('bottomSize');
+    const frameThickEl = document.getElementById('frameThick');
 
     // Отображаемые гарнитуры -> CSS font-family для canvas
     const FONT_MAP = {
@@ -134,26 +132,23 @@
     let img = null;
 
     function drawHeart(ctx, cx, cy, r, color){
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.beginPath();
+      ctx.save(); ctx.translate(cx, cy); ctx.beginPath();
       for(let a=0; a<Math.PI*2; a+=0.02){
         const x = r*16*Math.pow(Math.sin(a),3)/16;
         const y = -r*(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16;
         if(a===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       }
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.restore();
+      ctx.fillStyle = color; ctx.fill(); ctx.restore();
     }
 
     function draw() {
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Рамка карточки
+      // Рамка карточки (регулируемая толщина)
+      const border = parseInt(frameThickEl.value || '2', 10);
       ctx.strokeStyle = '#111';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = border;
       ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
       // Верхний текст
@@ -161,7 +156,8 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
       const topFontFamily = FONT_MAP[topFontSel.value] || FONT_MAP['Marck Script'];
-      ctx.font = `48px ${topFontFamily}`;
+      const topSize = parseInt(topSizeEl.value || '48', 10);
+      ctx.font = `${topSize}px ${topFontFamily}`;
       ctx.fillText(topTextInput.value, 40, 90);
 
       // Сердечки в правом верхнем углу
@@ -171,7 +167,8 @@
       // Нижний текст
       ctx.textAlign = 'center';
       const bottomFontFamily = FONT_MAP[bottomFontSel.value] || FONT_MAP['Poiret One'];
-      ctx.font = `40px ${bottomFontFamily}`;
+      const bottomSize = parseInt(bottomSizeEl.value || '40', 10);
+      ctx.font = `${bottomSize}px ${bottomFontFamily}`;
       ctx.fillText(bottomTextInput.value, canvas.width / 2, canvas.height - 80);
 
       // Фото (вписываем без обрезки)
@@ -207,22 +204,16 @@
 
     fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
 
-    replaceBtn.addEventListener('click', () => {
-      fileInput.value = '';
-      fileInput.click();
-    });
-
-    removeBtn.addEventListener('click', () => {
-      img = null;
-      canvas.width = BASE_W;
-      canvas.height = BASE_H;
-      draw();
-    });
+    replaceBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
+    removeBtn.addEventListener('click', () => { img = null; canvas.width = BASE_W; canvas.height = BASE_H; draw(); });
 
     topTextInput.addEventListener('input', draw);
     bottomTextInput.addEventListener('input', draw);
     topFontSel.addEventListener('change', draw);
     bottomFontSel.addEventListener('change', draw);
+    topSizeEl.addEventListener('input', draw);
+    bottomSizeEl.addEventListener('input', draw);
+    frameThickEl.addEventListener('input', draw);
 
     downloadBtn.addEventListener('click', () => {
       const link = document.createElement('a');
